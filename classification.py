@@ -2,6 +2,7 @@ import pymongo
 from pymongo import MongoClient
 from sklearn import svm
 from sklearn.model_selection import train_test_split
+from sklearn.model_selection import cross_val_score
 import numpy as np
 from bson.binary import Binary
 import pickle
@@ -91,3 +92,20 @@ for i in diferencias:
 plt.bar(X, Y, width=0.8, color='r')
 
 plt.show()
+
+#### CROSS VALIDATION ####
+
+# Para la validación cruzada, necesitamos dos sets: uno con todas las reviews y otro con todas las valoraciones de dichas reviews.
+reviews = []
+for i in vector_rating:
+    reviews.append(i['vector'])
+
+ratings = []
+
+for i in vector_rating:
+    ratings.append(i['rating'])
+
+# La variable scores almacenará una lista con el grado de precisión para cada una de las iteraciones indicadas mediante el parámetro "cv"
+scores = cross_val_score(clf, reviews, ratings, cv=10)
+print(scores)
+print("Accuracy: %0.2f (+/- %0.2f)" % (scores.mean(), scores.std() * 2))
